@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prenotazione Confermata - Assetto Teatro</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 600px; margin: 60px auto; padding: 20px; color: #333; text-align: center; }
+    h1 { color: #1a1a1a; }
+    .box { background: #f5f5f5; border-left: 4px solid #1a1a1a; padding: 20px; border-radius: 4px; text-align: left; margin: 30px 0; }
+    .footer { font-size: 13px; color: #888; margin-top: 40px; }
+    .loading { color: #888; }
+    .error { color: #c00; }
+  </style>
+</head>
+<body>
+  <div id="contenuto">
+    <p class="loading">Conferma in corso...</p>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const c = params.get("c");
+    const s = params.get("s");
+
+    if (!c || !s) {
+      document.getElementById("contenuto").innerHTML = "<h1>Link non valido</h1><p>Contattaci al <a href='tel:+393664454753'>366 445 4753</a></p>";
+    } else {
+      fetch(`https://nagxsmlxryxxblvxyeon.supabase.co/functions/v1/prenota-da-link?c=${c}&s=${s}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            document.getElementById("contenuto").innerHTML = `
+              <h1>🎭 Prenotazione Confermata!</h1>
+              <p>Ciao <strong>${data.nome}</strong>! La tua nuova lezione di prova è confermata.</p>
+              <div class="box">
+                <p>📅 <strong>${data.data}</strong></p>
+                <p>📍 <strong>${data.sede}</strong></p>
+              </div>
+              <p>Ti consigliamo un abbigliamento comodo (tuta e scarpe da ginnastica).</p>
+              <p>Per qualsiasi info scrivici a <a href="mailto:info@assettoteatro.it">info@assettoteatro.it</a> o chiamaci al <a href="tel:+393664454753">366 445 4753</a>.</p>
+              <p class="footer">Assetto Teatro | <a href="https://www.assettoteatro.it">assettoteatro.it</a></p>
+            `;
+          } else {
+            document.getElementById("contenuto").innerHTML = `<h1>Qualcosa è andato storto</h1><p>${data.errore || "Contattaci al 366 445 4753"}</p>`;
+          }
+        })
+        .catch(() => {
+          document.getElementById("contenuto").innerHTML = "<h1>Errore di connessione</h1><p>Contattaci al <a href='tel:+393664454753'>366 445 4753</a></p>";
+        });
+    }
+  </script>
+</body>
+</html>
