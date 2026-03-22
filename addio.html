@@ -13,4 +13,19 @@
 <body>
   <div id="contenuto"><p>Elaborazione in corso...</p></div>
   <script>
-    const params = new URLSearchParams(window.location.search
+    const params = new URLSearchParams(window.location.search);
+    const e = params.get("e");
+    if (!e) {
+      document.getElementById("contenuto").innerHTML = "<h1>Link non valido</h1>";
+    } else {
+      fetch("https://nagxsmlxryxxblvxyeon.supabase.co/functions/v1/cancella-da-lista?e=" + e)
+        .then(() => {
+          document.getElementById("contenuto").innerHTML = "<h1>Fatto!</h1><p>Hai rimosso il tuo indirizzo dalla nostra lista. Non riceverai altre comunicazioni da parte nostra.</p><p>Se in futuro vuoi tornare, scrivici a <a href='mailto:info@assettoteatro.it'>info@assettoteatro.it</a>.</p><p>A presto,<br><strong>Il team di Assetto Teatro</strong></p><p class='footer'><a href='https://www.assettoteatro.it'>assettoteatro.it</a></p>";
+        })
+        .catch(() => {
+          document.getElementById("contenuto").innerHTML = "<h1>Errore</h1><p>Riprova o contattaci.</p>";
+        });
+    }
+  </script>
+</body>
+</html>
